@@ -9,9 +9,28 @@
 /**
  * 
  */
+
+class UInputMappingContext;
+class UInputAction;
+
 UCLASS()
 class INVENTORY_API AInvPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
+
+protected:
+	virtual void BeginPlay() override;
+	virtual void SetupInputComponent() override;
+
+private:
+	void PrimaryInteract();
+
+
+	UPROPERTY(EditDefaultsOnly, Category = "Inventory")
+	TArray<TObjectPtr<UInputMappingContext>> DefaultIMCs;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Inventory")
+	TObjectPtr<UInputAction> PrimaryInteractAction;
+
+
 };
