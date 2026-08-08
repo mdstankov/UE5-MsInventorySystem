@@ -7,7 +7,9 @@
 #include "Inv_InventoryComponent.generated.h"
 
 
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+class UInv_InventoryBase;
+
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable)
 class INVENTORY_API UInv_InventoryComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -15,10 +17,29 @@ class INVENTORY_API UInv_InventoryComponent : public UActorComponent
 public:
 	UInv_InventoryComponent();
 
+	void ToggleInventoryMenu();
+	
 protected:
 	virtual void BeginPlay() override;
 
 private:
 	void ConstructInventory();	
+	
+private:
+	
+	TWeakObjectPtr<APlayerController> OwningController;
+	
+	UPROPERTY()
+	TObjectPtr<UInv_InventoryBase> InventoryMenu;
+		
+	UPROPERTY(EditAnywhere, Category="Inventory")
+	TSubclassOf<UInv_InventoryBase> InventoryMenuClass;
+	
+	
+	bool bInventoryMenuOpen;
+	void OpenInventoryMenu();
+	void CloseInventoryMenu();
+	
+	
 	
 };
