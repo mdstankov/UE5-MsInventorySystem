@@ -31,7 +31,7 @@ private:
 	TSubclassOf<UInv_GridSlot> GridSlotClass;
 	
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCanvasPanel> CanvalPanel;
+	TObjectPtr<UCanvasPanel> CanvasPanel;
 	
 	UPROPERTY()
 	TArray<TObjectPtr<UInv_GridSlot>> GridSlots;

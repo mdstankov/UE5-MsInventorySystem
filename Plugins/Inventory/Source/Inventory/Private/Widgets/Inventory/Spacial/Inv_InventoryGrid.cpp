@@ -19,13 +19,13 @@ void UInv_InventoryGrid::NativeOnInitialized()
 void UInv_InventoryGrid::ConstructGrid()
 {	
 	GridSlots.Reserve(Rows*Columns);
-	
+		
 	for (int32 j = 0; j < Rows; ++j)
 	{
 		for (int32 i = 0; i < Columns; ++i)
 		{
 			UInv_GridSlot* GridSlot = CreateWidget<UInv_GridSlot>(this, GridSlotClass);
-			CanvalPanel->AddChildToCanvas(GridSlot);
+			CanvasPanel->AddChildToCanvas(GridSlot);
 			
 			const FIntPoint TilePosition(i,j);
 			GridSlot->SetTileIndex(UInv_WidgetUtils::GetIndexFromPosition(TilePosition, Columns));
