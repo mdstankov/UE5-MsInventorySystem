@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "InvItemComponent.generated.h"
+#include "Inv_ItemComponent.generated.h"
 
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent),Blueprintable)
-class INVENTORY_API UInvItemComponent : public UActorComponent
+class INVENTORY_API UInv_ItemComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:
-	UInvItemComponent();
+	UInv_ItemComponent();
 
 	FString GetPickupMessage() const { return PickupMessage; }
 	

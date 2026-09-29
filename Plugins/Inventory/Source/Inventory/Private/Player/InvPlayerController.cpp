@@ -7,7 +7,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Interaction/InvHighlightable.h"
 #include "InventoryManagement/Components/Inv_InventoryComponent.h"
-#include "Items/Components/InvItemComponent.h"
+#include "Items/Components/Inv_ItemComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/HUD/Inv_HUDWidget.h"
 
@@ -63,8 +63,13 @@ void AInvPlayerController::SetupInputComponent()
 
 void AInvPlayerController::PrimaryInteract()
 {
-	UE_LOG(LogTemp, Log, TEXT("Primary Interact"))
-
+	if (!ThisActor.IsValid()) return;
+	
+	UInv_ItemComponent* ItemComp = ThisActor->FindComponentByClass<UInv_ItemComponent>();
+	
+	if (!IsValid(ItemComp) || !InventoryComponent.IsValid()) return;
+	
+	InventoryComponent->TryAddItem(ItemComp);	
 }
 
 void AInvPlayerController::CreateHUDWidget()
@@ -116,7 +121,7 @@ void AInvPlayerController::TraceForItem()
 			IInvHighlightable::Execute_Highlight(Highlightable);
 		}		
 		
-		UInvItemComponent* ItemComponent = ThisActor->FindComponentByClass<UInvItemComponent>();
+		UInv_ItemComponent* ItemComponent = ThisActor->FindComponentByClass<UInv_ItemComponent>();
 		if (!IsValid(ItemComponent)) return;
 		
 		if (IsValid(HUDWidget))

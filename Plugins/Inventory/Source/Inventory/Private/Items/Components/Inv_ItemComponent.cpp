@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Items/Components/InvItemComponent.h"
+#include "Items/Components/Inv_ItemComponent.h"
 
 
-UInvItemComponent::UInvItemComponent()
+UInv_ItemComponent::UInv_ItemComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
 	

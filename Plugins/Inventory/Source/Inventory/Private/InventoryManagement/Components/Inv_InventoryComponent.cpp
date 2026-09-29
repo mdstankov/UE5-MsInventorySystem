@@ -2,13 +2,25 @@
 
 
 #include "InventoryManagement/Components/Inv_InventoryComponent.h"
-
 #include "Widgets/Inventory/Inv_InventoryBase.h"
-
 
 UInv_InventoryComponent::UInv_InventoryComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
+}
+
+void UInv_InventoryComponent::TryAddItem(UInv_ItemComponent* ItemComponent)
+{
+	FInv_SlotAvailabilityResult Result = InventoryMenu->HasRoomForItem(ItemComponent);
+	
+	if (Result.TotalRoomToFill == 0)
+	{
+		NoRoomInInventory.Broadcast();
+		return;
+	}
+	
+	// TODO: Add item
+	
 }
 
 void UInv_InventoryComponent::ToggleInventoryMenu()
