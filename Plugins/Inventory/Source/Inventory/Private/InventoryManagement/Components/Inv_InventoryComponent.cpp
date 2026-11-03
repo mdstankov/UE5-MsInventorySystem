@@ -6,7 +6,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Widgets/Inventory/Inv_InventoryBase.h"
 
-UInv_InventoryComponent::UInv_InventoryComponent()
+UInv_InventoryComponent::UInv_InventoryComponent() : InventoryList(this)
 {
 	PrimaryComponentTick.bCanEverTick = false;
 	SetIsReplicatedByDefault(true);
@@ -46,6 +46,12 @@ void UInv_InventoryComponent::TryAddItem(UInv_ItemComponent* ItemComponent)
 void UInv_InventoryComponent::Server_AddNewItem_Implementation(UInv_ItemComponent* ItemComponent, int32 StackCount)
 {
 	UInv_InventoryItem* newItem = InventoryList.AddEntry(ItemComponent);
+	
+	// In case client is server, to ensure client is notified for item, as om those cases array wont be Replicated
+	if (GetOwner()->GetNetMode() == NM_ListenServer || GetOwner()->GetNetMode() == NM_Standalone)
+	{
+		OnItemAdded.Broadcast(newItem);
+	}
 	
 	// Tell item component to destroy its owning actor from the world
 	

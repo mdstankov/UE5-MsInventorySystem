@@ -46,7 +46,7 @@ void FInv_InventoryFastArray::PostReplicatedAdd(const TArrayView<int32> AddedInd
 	
 	for (int32 index : AddedIndices)
 	{
-		IC->OnItemAdded.Broadcast(Entries[index].Item);
+		IC->OnItemAdded.Broadcast(Entries[index].Item); 
 	}
 }
 

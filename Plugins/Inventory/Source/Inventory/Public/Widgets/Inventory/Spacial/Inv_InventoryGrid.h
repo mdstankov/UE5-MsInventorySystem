@@ -10,6 +10,7 @@
 
 class UInv_GridSlot;
 class UCanvasPanel;
+class UInv_InventoryComponent;
 
 UCLASS()
 class INVENTORY_API UInv_InventoryGrid : public UUserWidget
@@ -20,7 +21,11 @@ class INVENTORY_API UInv_InventoryGrid : public UUserWidget
 	
 	EInv_ItemCategory GetItemCategory() const { return ItemCategory;}
 	
+	UFUNCTION()
+	void AddItem( UInv_InventoryItem* Item); // Response to OnItemAdded from InventoryComponent
+	
 private:
+	TWeakObjectPtr<UInv_InventoryComponent> InventoryComponent;
 	
 	void ConstructGrid();
 	
@@ -44,5 +49,8 @@ private:
 	
 	UPROPERTY(EditAnywhere,Category="Inventory")
 	float TileSize;
+	
+	bool MatchesCategory(const UInv_InventoryItem* Item) const;
+	
 };
 	

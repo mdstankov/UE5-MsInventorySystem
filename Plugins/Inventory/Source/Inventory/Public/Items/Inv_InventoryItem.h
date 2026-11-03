@@ -17,11 +17,17 @@ class INVENTORY_API UInv_InventoryItem : public UObject
 public:
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override; // Required for replication
 	
+	// Enable being added to replicated subobject list, else crashes on ClientSide
+	virtual bool IsSupportedForNetworking() const override { return true; };
+	
+	
 	void SetItemManifest(const FInv_ItemManifest& InManifest);
 	
+	// Getter for instance struct
+	const FInv_ItemManifest& GetItemManifest() const { return ItemManifest.Get<FInv_ItemManifest>(); }
+	FInv_ItemManifest& GetItemManifestMutable() { return ItemManifest.GetMutable<FInv_ItemManifest>(); }
 private:
 	UPROPERTY(VisibleAnywhere, meta = (BaseStruct = "/Script/Inventory.Inv_ItemManifest"), Replicated, Category="Inventory")
-	FInstancedStruct ItemManifest;
-	
+	FInstancedStruct ItemManifest;	
 	
 };
