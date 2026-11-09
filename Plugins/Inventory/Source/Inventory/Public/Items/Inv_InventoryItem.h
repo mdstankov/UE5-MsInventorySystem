@@ -19,15 +19,27 @@ public:
 	
 	// Enable being added to replicated subobject list, else crashes on ClientSide
 	virtual bool IsSupportedForNetworking() const override { return true; };
-	
-	
+		
 	void SetItemManifest(const FInv_ItemManifest& InManifest);
 	
 	// Getter for instance struct
 	const FInv_ItemManifest& GetItemManifest() const { return ItemManifest.Get<FInv_ItemManifest>(); }
 	FInv_ItemManifest& GetItemManifestMutable() { return ItemManifest.GetMutable<FInv_ItemManifest>(); }
+	 
 private:
 	UPROPERTY(VisibleAnywhere, meta = (BaseStruct = "/Script/Inventory.Inv_ItemManifest"), Replicated, Category="Inventory")
 	FInstancedStruct ItemManifest;	
 	
 };
+
+// free function
+template<typename FragmentType>
+const FragmentType* GetFragment(const UInv_InventoryItem* Item, const FGameplayTag& Tag)
+{
+	if (!IsValid(Item)) return nullptr;
+
+	const FInv_ItemManifest& Manifest = Item->GetItemManifest();	
+	return Manifest.GetFragmentOfTypeWithTag<FragmentType>(Tag);
+}
+
+

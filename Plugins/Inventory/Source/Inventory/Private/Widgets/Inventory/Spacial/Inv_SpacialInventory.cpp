@@ -5,7 +5,9 @@
 
 #include "Components/Button.h"
 #include "Components/WidgetSwitcher.h"
+#include "InventoryManagement/Utils/Inv_InventoryStatics.h"
 #include "Widgets/Inventory/Spacial/Inv_InventoryGrid.h"
+#include "Inventory.h"
 
 void UInv_SpacialInventory::NativeOnInitialized()
 {
@@ -20,8 +22,18 @@ void UInv_SpacialInventory::NativeOnInitialized()
 
 FInv_SlotAvailabilityResult UInv_SpacialInventory::HasRoomForItem(UInv_ItemComponent* ItemComponent) const
 {
-	
-	return FInv_SlotAvailabilityResult();
+	switch (UInv_InventoryStatics::GetItemCategoryFromItemComponent(ItemComponent))
+	{
+		case EInv_ItemCategory::Equippable:
+			return Grid_Equippables->HasRoomForItem(ItemComponent);
+		case EInv_ItemCategory::Consumable:
+			return Grid_Consumables->HasRoomForItem(ItemComponent);
+		case EInv_ItemCategory::Craftable:
+			return Grid_Consumables->HasRoomForItem(ItemComponent);
+		default:
+			UE_LOG(LogInventory, Error, TEXT("ItemComponent does not have a alid Item Category!"))
+			return Grid_Consumables->HasRoomForItem(ItemComponent);		
+	}
 }
 
 void UInv_SpacialInventory::ShowEquippable()

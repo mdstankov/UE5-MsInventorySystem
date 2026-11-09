@@ -37,12 +37,10 @@ private:
 	void DisableButton(UButton* Button);
 
 	void SetActiveGrid( UInv_InventoryGrid* Grid, UButton * Button);
-	
-	
+		
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UWidgetSwitcher> Switcher;
-	
-	
+		
 	UPROPERTY(meta = (BindWidget))	
 	TObjectPtr<UInv_InventoryGrid> Grid_Equippables;	
 	
