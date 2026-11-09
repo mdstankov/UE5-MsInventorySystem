@@ -14,6 +14,7 @@
 #include "Widgets/Inventory/GridSlots/Inv_GridSlot.h"
 #include "Widgets/Utils/Inv_WidgetUtils.h"
 #include "Items/Manifest/Inv_ItemManifest.h"
+#include "Widgets/Inventory/SlottedItems/Inv_SlottedItem.h"
 
 void UInv_InventoryGrid::NativeOnInitialized()
 {
@@ -62,21 +63,65 @@ void UInv_InventoryGrid::AddItem(UInv_InventoryItem* Item)
 
 void UInv_InventoryGrid::AddItemToIndices(const FInv_SlotAvailabilityResult& Result, UInv_InventoryItem* NewItem)
 {
+	for ( const auto& Availability : Result.SlotAvailabilities )
+	{
+		// In case item needs to fill multiple slots
+		AddItemToIndex(NewItem, Availability.Index, Result.bStackable, Availability.AmountToFill);		
+	}	
+}
+
+void UInv_InventoryGrid::AddItemToIndex(UInv_InventoryItem* Item, const int32 Index, const bool bStackble,
+	const int32 StackAmount) const
+{
 	// Get grid fragment, for grid spaces requirement
-	const FInv_GridFragment* GridFragment = GetFragment<FInv_GridFragment>(NewItem, FragmentTags::GridFragment);
+	const FInv_GridFragment* GridFragment = GetFragment<FInv_GridFragment>(Item, FragmentTags::GridFragment);
 	
 	// Get image fragment for icon to display
-	const FInv_ImageFragment* ImageFragment = GetFragment<FInv_ImageFragment>(NewItem, FragmentTags::GridFragment);
+	const FInv_ImageFragment* ImageFragment = GetFragment<FInv_ImageFragment>(Item, FragmentTags::GridFragment);
 	
 	if (!GridFragment || !ImageFragment)
 	{
 		return;
 	}
-	
+			
 	// Create widget to add to the grid
+	UInv_SlottedItem* SlottedItem = CreateSlottedItem(Item, bStackble, StackAmount, GridFragment, ImageFragment, Index);	
+	
+	// Add slotted item to canvas panel
+	
 	
 	// Store widget in container
 	
+}
+
+UInv_SlottedItem* UInv_InventoryGrid::CreateSlottedItem(UInv_InventoryItem* Item, const bool bStackble,
+	const int32 StackAmount, const FInv_GridFragment* GridFragment, const FInv_ImageFragment* ImageFragment,
+	const int32 Index) const
+{
+	UInv_SlottedItem* SlottedItem = CreateWidget<UInv_SlottedItem>(GetOwningPlayer(), SlottedItemClass);
+	SlottedItem->SetInventoryItem(Item);	
+	SetSlottedItemImage(SlottedItem, GridFragment, ImageFragment);
+	SlottedItem->SetGridIndex(Index);
+	
+	return  SlottedItem;
+}
+
+
+FVector2D UInv_InventoryGrid::GetDrawSize(const FInv_GridFragment* GridFragment) const
+{	
+	const float IconTileWith = TileSize - GridFragment->GetGridPadding() * 2; // *2 (left,right padding)
+	return GridFragment->GetGridSize() * IconTileWith; // scaled by the number of slots it takes
+}
+
+void UInv_InventoryGrid::SetSlottedItemImage(const UInv_SlottedItem* SlottedItem, const FInv_GridFragment* GridFragment,
+	const FInv_ImageFragment* ImageFragment) const
+{
+	// Brushes used in UMG when setting image textures
+	FSlateBrush Brush;
+	Brush.SetResourceObject(ImageFragment->GetIcon());
+	Brush.DrawAs = ESlateBrushDrawType::Image;	
+	Brush.ImageSize = GetDrawSize(GridFragment);
+	SlottedItem->SetImageBrush(Brush);
 }
 
 void UInv_InventoryGrid::ConstructGrid()
@@ -109,3 +154,4 @@ bool UInv_InventoryGrid::MatchesCategory(const UInv_InventoryItem* Item) const
 	return Item->GetItemManifest().GetItemCategory() == ItemCategory;
 	
 }
+
