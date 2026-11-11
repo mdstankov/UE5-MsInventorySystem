@@ -71,13 +71,13 @@ void UInv_InventoryGrid::AddItemToIndices(const FInv_SlotAvailabilityResult& Res
 }
 
 void UInv_InventoryGrid::AddItemToIndex(UInv_InventoryItem* Item, const int32 Index, const bool bStackble,
-	const int32 StackAmount) const
+	const int32 StackAmount)
 {
 	// Get grid fragment, for grid spaces requirement
 	const FInv_GridFragment* GridFragment = GetFragment<FInv_GridFragment>(Item, FragmentTags::GridFragment);
 	
 	// Get image fragment for icon to display
-	const FInv_ImageFragment* ImageFragment = GetFragment<FInv_ImageFragment>(Item, FragmentTags::GridFragment);
+	const FInv_ImageFragment* ImageFragment = GetFragment<FInv_ImageFragment>(Item, FragmentTags::IconFragment);
 	
 	if (!GridFragment || !ImageFragment)
 	{
@@ -88,10 +88,10 @@ void UInv_InventoryGrid::AddItemToIndex(UInv_InventoryItem* Item, const int32 In
 	UInv_SlottedItem* SlottedItem = CreateSlottedItem(Item, bStackble, StackAmount, GridFragment, ImageFragment, Index);	
 	
 	// Add slotted item to canvas panel
-	
+	AddSlottedItemToCanvas(Index, GridFragment, SlottedItem);
 	
 	// Store widget in container
-	
+	SlottedItems.Add(Index, SlottedItem);
 }
 
 UInv_SlottedItem* UInv_InventoryGrid::CreateSlottedItem(UInv_InventoryItem* Item, const bool bStackble,
@@ -106,6 +106,16 @@ UInv_SlottedItem* UInv_InventoryGrid::CreateSlottedItem(UInv_InventoryItem* Item
 	return  SlottedItem;
 }
 
+void UInv_InventoryGrid::AddSlottedItemToCanvas(const int32 Index, const FInv_GridFragment* GridFragment,
+	UInv_SlottedItem* SlottedItem) const
+{
+	CanvasPanel->AddChild(SlottedItem);
+	UCanvasPanelSlot* CanvasSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(SlottedItem);
+	CanvasSlot->SetSize(GetDrawSize(GridFragment));
+	const FVector2D DrawPos = UInv_WidgetUtils::GetPositionFromIndex(Index, Columns) * TileSize;
+	const FVector2D DrawPosWithPadding = DrawPos + FVector2D(GridFragment->GetGridPadding());
+	CanvasSlot->SetPosition(DrawPosWithPadding);	
+}
 
 FVector2D UInv_InventoryGrid::GetDrawSize(const FInv_GridFragment* GridFragment) const
 {	

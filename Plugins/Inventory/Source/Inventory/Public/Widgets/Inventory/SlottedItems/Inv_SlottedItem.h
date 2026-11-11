@@ -26,7 +26,7 @@ public:
 	int32 GetGridIndex() const { return GridIndex; }
 	void SetGridDimensions( const FIntPoint& Dimensions ) { GridDimensions = GridDimensions; }
 	FIntPoint GetGridDimensions() const { return GridDimensions; }		
-	void SetInventoryItem( UInv_InventoryItem* Item ){ InventoryItem = Item; };
+	void SetInventoryItem( UInv_InventoryItem* Item);
 	UInv_InventoryItem* GetInventoryItem() const { return InventoryItem.Get(); }
 		
 	void SetImageBrush( const FSlateBrush& Brush) const;
