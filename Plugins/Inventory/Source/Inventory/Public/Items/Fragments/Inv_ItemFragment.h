@@ -59,7 +59,23 @@ private:
 	TObjectPtr<UTexture2D> Icon{nullptr};
 	
 	UPROPERTY(EditAnywhere, Category="Inventory")
-	FVector2D IconDimension{FVector2D(44.f, 44.f)};
+	FVector2D IconDimension{FVector2D(44.f, 44.f)};	
+};
+
+// For Stackable
+USTRUCT(BlueprintType)
+struct FInv_StackableFragment : public FInv_ItemFragment
+{
+	GENERATED_BODY()
 	
+	int32 GetMaxStackSize() const { return MaxStacks; }
+	int32 GetStackCount() const { return StackCount; }
+	
+private:
+	UPROPERTY(EditAnywhere, Category="Inventory")
+	int32 MaxStacks{1};
+	
+	UPROPERTY(EditAnywhere, Category="Inventory")
+	int32 StackCount{1};
 };
 
